@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Unconditional #23</title>
+    </head>
+<body>
+
+    <canvas id="love"></canvas>
+
+    <script>
+        var canvas = document.getElementById("love");
+        var W = window.innerWidth;
+        var r = '#FEAA01';
+        var g = '#14F195';
+        var b = '#9945FF';
+
+        var ctx = canvas.getContext("2d");
+        var H = 16;
+        var M = 6;
+        var G = 4;
+        canvas.width = Math.min(M * H * 2, W) * G;
+        canvas.height = Math.min(M * H, window.innerHeight)*G;
+        var S = Math.min(M, W / 2 / H - 1);
+        var x = y = 0;
+
+        var L = (window.location.hash ||
+            "#" +
+            "0000000000000000" +
+            "0000011100000000" +
+            "0001111111100000" +
+            "0011111111110000" +
+            "0111111111111000" +
+            "0111111111111000" +
+            "0111111111111000" +
+            "0111111101011000" +
+            "0111111101011000" +
+            "0111111111111000" +
+            "0011111111111000" +
+            "0001111111111000" +
+            "0000111111110000" +
+            "0000111111100000" +
+            "0000111110000000" +
+            "0000111110000000").substr(1);
+        function loop(t) {
+            var a = Math.min(255, Math.max(0, Math.floor((Math.cos(t/3100) + 1)*0.7 * 256)));
+            var o = Math.max(0, -Math.cos(t/3100)-0.5)*2
+            var s = S * (1 + Math.max(0, Math.cos(t/3100*2)-0.5)*2) /2
+            function one(ox, oy, b, r) {
+                ctx.fillStyle = b;
+                ctx.fillRect(ox, oy, S*H, S*H);
+                ctx.fillStyle = r;
+                ctx.fillRect(ox+S*H, oy, S*H, S*H);
+                function heart(ox, oy, c, ) {
+                    c = c + (a < 16 ? "0" : "") + a.toString(16)
+                    for (var i = 0; i < H*H; ++i) {
+                        var x = i % H;
+                        var y = Math.floor(i / H);
+
+                        var love = L[i] == '1';
+                        ctx.fillStyle = love ? g : c;
+                        ctx.fillRect(ox + x * S + (1-s) / 2 + S/2, oy + y * S + (1-s) / 2 + S/2, s, s)
+                    }
+                }
+                heart(ox + o * S*H/2, oy, r);
+                heart(ox + S*H - o * S*H/2, oy, b);
+            }
+            for (var i = 0; i < G*G; i+=1) {
+                var x = i % G;
+                var y = Math.floor(i / G);
+                one(x*S*H*2, y*S*H, y % 2 ? r : b, y % 2 ? b : r);
+            }
+            window.requestAnimationFrame(loop);
+        }
+        window.requestAnimationFrame(loop);
+    </script>
+</body>
+</html>
